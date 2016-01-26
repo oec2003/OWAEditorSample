@@ -7,9 +7,10 @@ OWA全称Office Web App，是用来做Office文档预览的一个很好的工具
 ### WopiHost
 
 WopiHost是GitHub上大牛实现的使用OWA进行Word在线编辑的开源程序，代码地址[https://github.com/marx-yu/WopiHost.git](https://github.com/marx-yu/WopiHost.git)，该程序的代码结构如下图：
-![](media/14538153573439/14538187926396.jpg)￼
+![http://blog.fwhyy.com/wp-content/uploads/2016/01/wpid-14538187926396.jpg](http://blog.fwhyy.com/wp-content/uploads/2016/01/wpid-14538187926396.jpg)
 
 使用该程序需要注意的几个地方：
+
 1. 该程序依赖Microsoft.CobaltCore.dll ，这个dll在安装有OWA的服务器上可以找到，我已经将此dll文件放在项目中的Lib目录中；
 2. 该程序是一个控制台程序，启动后会是一个http服务，并监听一个特定端口；
 3. 基本只需关注Program类和CobaltServer两个类就可以了；
@@ -17,6 +18,7 @@ WopiHost是GitHub上大牛实现的使用OWA进行Word在线编辑的开源程�
 ### 实现思路
 
 要实现跟分布式文件系统的集成，需要三步：
+
 1. 从分布式文件保存文件到服务器的某个目录中；
 2. OWA加载该文件；
 3. 修改文件，点击保存后文件需要存储到分布式文件系统中。
@@ -36,6 +38,7 @@ http://192.168.16.98/we/wordeditorframe.aspx?WOPISrc=http://localhost:9111/wopi/
 换成Id后文件可以正确加载并保存，但因为GridFs不支持文件的更新操作，如果要更新一个文件需要先删除再添加，新添加的文件的FileId会发生变化，这样就会导致保存后页面加载的还是保存前的文件。
 
 而且WopiHost对Word、Excel等不同类型的处理方式还不一样，即便上面遇到的问题能够解决，整个代码修改来也很复杂，所以需要转变思路，将上面提到的三个步骤分开来做：
+
 1. 签出文件，该步骤将GridFs中的文件保存到服务器目录中；
 2. 编辑文件，该步骤可以使用WopiHost的原始功能，代码不用做任何修改；
 3. 签入文件，该步骤将目录中的文件保存到GridFs中。
